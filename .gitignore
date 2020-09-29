@@ -110,6 +110,8 @@ ENV/
 env.bak/
 venv.bak/
 
+dwh.cfg
+
 # Spyder project settings
 .spyderproject
 .spyproject
