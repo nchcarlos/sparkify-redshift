@@ -14,23 +14,31 @@ DWHCfg = namedtuple(
             'DB_USER',
             'DB_PASSWORD',
             'PORT',
-            'IAM_ROLE_NAME'
+            'IAM_ROLE_NAME',
+            'LOG_DATA',
+            'LOG_JSONPATH',
+            'SONG_DATA',
         ])
 
 config = configparser.ConfigParser()
 config.read_file(open('dwh.cfg'))
 
-_dwh_cfg = DWHCfg(ACCESS_KEY = config.get('AWS','KEY'),
-                  SECRET_KEY=config.get('AWS','SECRET'),
-                  CLUSTER_TYPE=config.get("DWH", "DWH_CLUSTER_TYPE"),
-                  NUM_NODES=config.get("DWH", "DWH_NUM_NODES"),
-                  NODE_TYPE=config.get("DWH", "DWH_NODE_TYPE"),
-                  CLUSTER_IDENTIFIER=config.get("DWH", "DWH_CLUSTER_IDENTIFIER"),
-                  DB=config.get("DWH", "DWH_DB"),
-                  DB_USER=config.get("DWH", "DWH_DB_USER"),
-                  DB_PASSWORD=config.get("DWH", "DWH_DB_PASSWORD"),
-                  PORT=config.get("DWH", "DWH_PORT"),
-                  IAM_ROLE_NAME=config.get("DWH", "DWH_IAM_ROLE_NAME"))
+_dwh_cfg = DWHCfg(
+    ACCESS_KEY = config.get('AWS','KEY'),
+    SECRET_KEY=config.get('AWS','SECRET'),
+    CLUSTER_TYPE=config.get("DWH", "CLUSTER_TYPE"),
+    NUM_NODES=config.get("DWH", "NUM_NODES"),
+    NODE_TYPE=config.get("DWH", "NODE_TYPE"),
+    CLUSTER_IDENTIFIER=config.get("DWH", "CLUSTER_IDENTIFIER"),
+    DB=config.get("DWH", "DB"),
+    DB_USER=config.get("DWH", "DB_USER"),
+    DB_PASSWORD=config.get("DWH", "DB_PASSWORD"),
+    PORT=config.get("DWH", "PORT"),
+    IAM_ROLE_NAME=config.get("DWH", "IAM_ROLE_NAME"),
+    LOG_DATA=config.get('S3', 'LOG_DATA'),
+    LOG_JSONPATH=config.get('S3', 'LOG_JSONPATH'),
+    SONG_DATA=config.get('S3', 'SONG_DATA'),
+)
 
 def get_config():
     """
@@ -44,14 +52,18 @@ def get_config():
                     SECRET
 
     Section:    [DWH]
-        Keys:       DWH_CLUSTER_TYPE
-                    DWH_NUM_NODES
-                    DWH_NODE_TYPE
-                    DWH_IAM_ROLE_NAME
-                    DWH_CLUSTER_IDENTIFIER
-                    DWH_DB
-                    DWH_DB_USER
-                    DWH_DB_PASSWORD
-                    DWH_PORT
+        Keys:       CLUSTER_TYPE
+                    NUM_NODES
+                    NODE_TYPE
+                    IAM_ROLE_NAME
+                    CLUSTER_IDENTIFIER
+                    DB
+                    DB_USER
+                    DB_PASSWORD
+                    PORT
+    Section:    [S3]
+        Keys:       LOG_DATA
+                    LOG_JSONPATH
+                    SONG_DATA
     """
     return _dwh_cfg
