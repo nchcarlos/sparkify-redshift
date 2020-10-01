@@ -6,6 +6,7 @@ DWHCfg = namedtuple(
         [
             'ACCESS_KEY',
             'SECRET_KEY',
+            'REGION',
             'CLUSTER_TYPE',
             'NUM_NODES',
             'NODE_TYPE',
@@ -26,6 +27,7 @@ config.read_file(open('dwh.cfg'))
 _dwh_cfg = DWHCfg(
     ACCESS_KEY = config.get('AWS','KEY'),
     SECRET_KEY=config.get('AWS','SECRET'),
+    REGION=config.get('AWS','REGION'),
     CLUSTER_TYPE=config.get("DWH", "CLUSTER_TYPE"),
     NUM_NODES=config.get("DWH", "NUM_NODES"),
     NODE_TYPE=config.get("DWH", "NODE_TYPE"),
@@ -50,6 +52,7 @@ def get_config():
     Section:    [AWS]
         Keys:       KEY
                     SECRET
+                    REGION
 
     Section:    [DWH]
         Keys:       CLUSTER_TYPE
