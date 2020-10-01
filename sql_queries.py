@@ -1,9 +1,9 @@
 import configparser
 
+from config import get_config
 
 # CONFIG
-config = configparser.ConfigParser()
-config.read('dwh.cfg')
+cfg = get_config()
 
 # DROP TABLES
 staging_events_table_drop = 'DROP TABLE IF EXISTS "staging_events"'
@@ -30,11 +30,11 @@ CREATE TABLE "staging_events" (
     "location"          TEXT,
     "method"            TEXT,
     "page"              TEXT,
-    "registration"      FLOAT,
+    "registration"      DOUBLE PRECISION,
     "sessionId"         INT,
     "song"              TEXT,
     "status"            INT,
-    "ts"                INT,
+    "ts"                BIGINT,
     "userAgent"         TEXT,
     "userId"            INT
 );
@@ -118,11 +118,16 @@ CREATE TABLE "time"
 
 # STAGING TABLES
 
-staging_events_copy = ("""
-""").format()
+staging_events_copy = (
+    f"copy staging_events from '{cfg.LOG_DATA}' "
+    "credentials 'aws_iam_role={}' "
+    f"json '{cfg.LOG_JSONPATH}';"
+)
 
-staging_songs_copy = ("""
-""").format()
+staging_songs_copy = (
+    f"copy staging_songs from '{cfg.SONG_DATA}' "
+    "credentials 'aws_iam_role={}' json 'auto';"
+)
 
 # FINAL TABLES
 
@@ -173,5 +178,5 @@ insert_table_queries = [
     user_table_insert,
     song_table_insert,
     artist_table_insert,
-    time_table_insert
+    time_table_insert,
 ]
