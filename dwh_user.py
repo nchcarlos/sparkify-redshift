@@ -13,6 +13,22 @@ def attach_role_policy(iam_client, role_name):
             RoleName=role_name,
             PolicyArn='arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess')
 
+def check_role(iam_client, role_name):
+    """
+    A convenience function to check for the existence of a given role.
+
+    :param iam_client: A low-level client representing AWS Identity and Access
+                       Management (IAM).
+    :param role_name: The name of the role to check.
+    """
+    try:
+        iam_client.get_role(RoleName=role_name)
+    except iam_client.exceptions.NoSuchEntityException:
+        return False
+    except Exception as e:
+        print(e)
+    return True
+
 def create_role(iam_client, role_name):
     """
     Creates the Redshift role for the data warehouse and attaches an S3 read
