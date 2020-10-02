@@ -95,6 +95,16 @@ def describe(rs_client, cluster_id, print_props=False):
     except Exception as e:
         print(e)
 
+def get_endpoint(rs_client, cluster_id):
+    """
+    Get the endpoint address of the cluster to user for connections.
+
+    :param rs_client: A low-level client representing Amazon Redshift.
+    :param clust_id: The identifier of the cluster to be deleted.
+    """
+    cluster_props = cluster.describe(rs_client, cluster_id)
+    return cluster_props['Endpoint']['Address']
+
 def is_available(rs_client, cluster_id):
     clust_props = describe(rs_client, cluster_id)
     return clust_props and clust_props['ClusterStatus'].lower() == 'available'
