@@ -70,12 +70,3 @@ def get_config():
                     SONG_DATA
     """
     return _dwh_cfg
-
-def get_connection_string(endpoint):
-    return ' '.join([
-        f'host={endpoint}',
-        f'dbname={_dwh_cfg.DB}',
-        f'user={_dwh_cfg.DB_USER}',
-        f'password={_dwh_cfg.DB_PASSWORD}',
-        f'port={_dwh_cfg.PORT}',
-    ])
