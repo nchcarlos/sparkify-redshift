@@ -1,3 +1,5 @@
+import cluster
+import config
 from sql_queries import create_table_queries
 from sql_queries import drop_table_queries
 
@@ -29,17 +31,14 @@ def create_tables(cur, conn, drop_tables_first=True):
         conn.commit()
 
 def main():
-    # config = configparser.ConfigParser()
-    # config.read('dwh.cfg')
+    cfg = config.get_config()
+    conn = cluster.get_connection(cfg)
+    cur = conn.cursor()
 
-    # conn = psycopg2.connect("host={} dbname={} user={} password={} port={}".format(*config['CLUSTER'].values()))
-    # cur = conn.cursor()
+    drop_tables(cur, conn)
+    create_tables(cur, conn, drop_tables_first=False)
 
-    # drop_tables(cur, conn)
-    create_tables(None, None)
-
-    # conn.close()
-
+    conn.close()
 
 if __name__ == "__main__":
     main()

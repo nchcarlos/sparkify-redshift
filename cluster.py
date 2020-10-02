@@ -1,4 +1,7 @@
 import botocore
+import psycopg2
+
+import util
 
 def authorize_ingress(ec2_client, vpc_id, port, protocol='TCP',
                        cidr_ip='0.0.0.0/0'):
@@ -94,6 +97,43 @@ def describe(rs_client, cluster_id, print_props=False):
         return None
     except Exception as e:
         print(e)
+
+def get_connection(cfg, endpoint=None):
+    """
+    Get a connection to the cluster.
+
+    :param cfg: config object for the project
+    :param endpoint: endpoint address of the cluster
+    """
+    if not endpoint:
+        endpoint = get_endpoint(util.get_redshift_client(cfg),
+                                cfg.CLUSTER_IDENTIFIER)
+    return psycopg2.connect(get_connection_string(endpoint, cfg))
+
+def get_connection_string(endpoint, cfg):
+    """
+    Build the connection string used to connect to the cluster.
+
+    :param endpoint: endpoint address of the cluster
+    :param cfg: config object for the project
+    """
+    return ' '.join([
+        f'host={endpoint}',
+        f'dbname={cfg.DB}',
+        f'user={cfg.DB_USER}',
+        f'password={cfg.DB_PASSWORD}',
+        f'port={cfg.PORT}',
+    ])
+
+def get_endpoint(rs_client, cluster_id):
+    """
+    Get the endpoint address of the cluster to user for connections.
+
+    :param rs_client: A low-level client representing Amazon Redshift.
+    :param clust_id: The identifier of the cluster to be deleted.
+    """
+    cluster_props = describe(rs_client, cluster_id)
+    return cluster_props['Endpoint']['Address']
 
 def is_available(rs_client, cluster_id):
     clust_props = describe(rs_client, cluster_id)
